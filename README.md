@@ -1,3 +1,7 @@
+DATABASE_URL='mysql2://redmine_clear:@localhost/redmine_clear_development' bundle exec sidekiq -e development -q mailer
+
+Plugin adopts gem named sidekiq_mailer (http://github.com/andersondias/sidekiq_mailer) for redmine 
+
 # Sidekiq::Mailer
 
 Sidekiq::Mailer adds to your ActionMailer classes the ability to send mails asynchronously.

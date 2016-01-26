@@ -4,7 +4,18 @@ class Sidekiq::Mailer::Proxy
   def initialize(mailer_class, method_name, *args)
     @mailer_class = mailer_class
     @method_name = method_name
-    *@args = *args
+    #byebug
+    #if method_name == :issue_add and args.first.class.name == "Issue"
+    unless Sidekiq.server?
+      case method_name
+        when :issue_add
+          *@args = args.map{|a| a.is_a?(Array) ? (a.map(&:id))  : (a.id)}
+        when :document_added
+          *@args = [args.first.id, User.current.id]
+      end
+    else
+      *@args = *args
+    end
   end
 
   def actual_message
