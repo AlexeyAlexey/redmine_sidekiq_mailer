@@ -9,5 +9,8 @@ class Sidekiq::Mailer::Worker
     end
   end
 
- 
+  private
+    def perform_work(mailer_class, action, params)
+      mailer_class.constantize.send(action, *params).deliver!
+    end
 end

@@ -12,9 +12,12 @@ ActionDispatch::Callbacks.to_prepare do
 	    issue_ = Issue.find_by_id("#{issue}")
         to_users_ = to_users.map{|user_id| User.find_by_id("#{user_id}")}
 	    cc_users_ = cc_users.map{|user_id| User.find_by_id("#{user_id}")}
-		      
-	    mailer_class.constantize.send(action, issue_, to_users_, cc_users_).deliver!
-
+		
+		params = []
+        params << issue_
+        params << to_users_
+        params << cc_users_
+	    perform_work(mailer_class, action, params)
       end
 
       def document_added(mailer_class, action, params)
@@ -22,6 +25,10 @@ ActionDispatch::Callbacks.to_prepare do
         document = Document.find_by_id(document_id)
         User.current = User.find_by_id(user_current_id)
         mailer_class.constantize.send(action, document).deliver!
+
+        params = []
+        params << document
+        perform_work(mailer_class, action, params)
       end
 
   end

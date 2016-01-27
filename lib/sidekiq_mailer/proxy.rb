@@ -9,6 +9,8 @@ class Sidekiq::Mailer::Proxy
       methods_from_modules = modules_with_methods.map(&:private_instance_methods).flatten
       if methods_from_modules.include?(method_name)
          *@args = send(method_name, args)
+      else
+        *@args = *args
       end
     else
       *@args = *args
