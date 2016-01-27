@@ -4,14 +4,11 @@ class Sidekiq::Mailer::Proxy
   def initialize(mailer_class, method_name, *args)
     @mailer_class = mailer_class
     @method_name = method_name
-    #byebug
-    #if method_name == :issue_add and args.first.class.name == "Issue"
     unless Sidekiq.server?
-      case method_name
-        when :issue_add
-          *@args = args.map{|a| a.is_a?(Array) ? (a.map(&:id))  : (a.id)}
-        when :document_added
-          *@args = [args.first.id, User.current.id]
+      modules_with_methods = Sidekiq::Mailer::Proxy.included_modules.select{|m| "#{m}"=~/\wArgsConverterSidekiq/}
+      methods_from_modules = modules_with_methods.map(&:private_instance_methods).flatten
+      if methods_from_modules.include?(method_name)
+         *@args = send(method_name, args)
       end
     else
       *@args = *args

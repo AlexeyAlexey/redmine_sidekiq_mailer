@@ -1,3 +1,3 @@
-source 'https://rubygems.org'
+#source 'https://rubygems.org'
 
-gem "sidekiq"
+gem "sidekiq", source: 'https://rubygems.org'

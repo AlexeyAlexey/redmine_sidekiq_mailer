@@ -59,8 +59,9 @@ module Sidekiq
       end
 
       def method_missing(method_name, *args)
-        #byebug
-        if action_methods.include?(method_name.to_s) and [:issue_add, :document_added].include?(method_name)
+        modules_with_methods = Sidekiq::Mailer::Worker.included_modules.select{|m| "#{m}"=~/\wExtSidekiq/}
+        methods_from_modules = modules_with_methods.map(&:private_instance_methods).flatten
+        if action_methods.include?(method_name.to_s) and methods_from_modules.include?(method_name)
           Sidekiq::Mailer::Proxy.new(self, method_name, *args)
         else
           super
