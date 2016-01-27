@@ -7,17 +7,17 @@ ActionDispatch::Callbacks.to_prepare do
 
   module RedmineMailerExtSidekiq
     private
-	  def issue_add(mailer_class, action, params)
-	    issue, to_users, cc_users = *params
-	    issue_ = Issue.find_by_id("#{issue}")
+	    def issue_add(mailer_class, action, params)
+	      issue, to_users, cc_users = *params
+	      issue_ = Issue.find_by_id("#{issue}")
         to_users_ = to_users.map{|user_id| User.find_by_id("#{user_id}")}
-	    cc_users_ = cc_users.map{|user_id| User.find_by_id("#{user_id}")}
+	      cc_users_ = cc_users.map{|user_id| User.find_by_id("#{user_id}")}
 		
-		params = []
+		    params = []
         params << issue_
         params << to_users_
         params << cc_users_
-	    perform_work(mailer_class, action, params)
+	      perform_work(mailer_class, action, params)
       end
 
       def document_added(mailer_class, action, params)
@@ -35,12 +35,12 @@ ActionDispatch::Callbacks.to_prepare do
 
   module RedmineMailerArgsConverterSidekiq
     private
-	  def issue_add(args)
+	    def issue_add(args)
         args.map{|a| a.is_a?(Array) ? (a.map(&:id))  : (a.id)}
       end
 
       def document_added(args)
-        *@args = [args.first.id, User.current.id]
+        [args.first.id, User.current.id]
       end
 
   end
