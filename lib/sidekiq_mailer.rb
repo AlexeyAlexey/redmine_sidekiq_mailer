@@ -59,9 +59,10 @@ module Sidekiq
       end
 
       def method_missing(method_name, *args)
-        modules_with_methods = Sidekiq::Mailer::Worker.included_modules.select{|m| "#{m}"=~/\wExtSidekiq/}
-        methods_from_modules = modules_with_methods.map(&:private_instance_methods).flatten
-        if action_methods.include?(method_name.to_s) and methods_from_modules.include?(method_name)
+        #modules_with_methods = Sidekiq::Mailer::Worker.included_modules.select{|m| "#{m}"=~/\wExtSidekiq/}
+        #methods_from_modules = modules_with_methods.map(&:private_instance_methods).flatten
+        #const_get(:SIDEKIQ_MAILER_FILTER_ONLY).include?(method_name.to_s)
+        if action_methods.include?(method_name.to_s) and send(:new).send(:sidekiq_mailer_filter_only).include?(method_name.to_s)#const_get(:SIDEKIQ_MAILER_FILTER_ONLY).include?(method_name.to_s) #methods_from_modules.include?(method_name)
           Sidekiq::Mailer::Proxy.new(self, method_name, *args)
         else
           super

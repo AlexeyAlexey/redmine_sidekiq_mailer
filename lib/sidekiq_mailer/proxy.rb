@@ -5,10 +5,14 @@ class Sidekiq::Mailer::Proxy
     @mailer_class = mailer_class
     @method_name = method_name
     unless Sidekiq.server?
-      modules_with_methods = Sidekiq::Mailer::Proxy.included_modules.select{|m| "#{m}"=~/\wArgsConverterSidekiq/}
-      methods_from_modules = modules_with_methods.map(&:private_instance_methods).flatten
-      if methods_from_modules.include?(method_name)
-         *@args = send(method_name, args)
+      #mailer_class.send(:new).sidekiq_mailer_before_issue_add(args)
+      mail_obj = mailer_class.send(:new)
+      mail_obj.send(:sidekiq_mailer_filter_before).include?(method_name.to_s)
+      #modules_with_methods = Sidekiq::Mailer::Proxy.included_modules.select{|m| "#{m}"=~/\wArgsConverterSidekiq/}
+      #methods_from_modules = modules_with_methods.map(&:private_instance_methods).flatten
+      if mail_obj.send(:sidekiq_mailer_filter_before).include?(method_name.to_s)#methods_from_modules.include?(method_name)
+         *@args = mail_obj.send("sidekiq_mailer_before_#{method_name}", args)
+         #*@args = send(method_name, args)
       else
         *@args = *args
       end
