@@ -6,7 +6,7 @@ class Sidekiq::Mailer::Proxy
     @method_name = method_name
     unless Sidekiq.server?
       if defined?(RedmineApp)
-        class_constant = "BeforeFilter::#{mailer_class}".constantize
+        class_constant = "Sidekiq::Mailer::BeforeFilter::#{mailer_class}".constantize
         mailer_obj = class_constant.new
         *@args = mailer_obj.send(method_name, args)
       else

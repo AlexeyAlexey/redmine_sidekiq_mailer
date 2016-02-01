@@ -14,7 +14,7 @@ ActionDispatch::Callbacks.to_prepare do
   end
 
   class Sidekiq::Mailer::AfterFilter::Mailer
-    def issue_add(mailer_class, action, params)
+    def issue_add(params)
       #sleep 1
       i = 0
       issue_ = nil
@@ -31,9 +31,10 @@ ActionDispatch::Callbacks.to_prepare do
       params_ << issue_
       params_ << to_users_
       params_ << cc_users_
+      params_
     end
 
-    def document_added(mailer_class, action, params)
+    def document_added(params)
       document_id, user_current_id = *params
       document = Document.find_by_id(document_id)
       User.current = User.find_by_id(user_current_id)
