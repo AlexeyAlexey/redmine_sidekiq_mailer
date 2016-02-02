@@ -5,10 +5,10 @@ class Sidekiq::Mailer::Proxy
     @mailer_class = mailer_class
     @method_name = method_name
     unless Sidekiq.server?
-      modules_with_methods = Sidekiq::Mailer::Proxy.included_modules.select{|m| "#{m}"=~/\wArgsConverterSidekiq/}
-      methods_from_modules = modules_with_methods.map(&:private_instance_methods).flatten
-      if methods_from_modules.include?(method_name)
-         *@args = send(method_name, args)
+      if defined?(RedmineApp)
+        class_constant = "Sidekiq::Mailer::BeforeFilter::#{mailer_class}".constantize
+        mailer_obj = class_constant.new
+        *@args = mailer_obj.send(method_name, args)
       else
         *@args = *args
       end
