@@ -1,14 +1,14 @@
 Integration with Redmine
 
-Changes give opportunity convert args of methods to easy objects and back
+Adds to gem the ability convert args of methods to easy objects and back
 
 DATABASE_URL='mysql2://redmine_clear:@localhost/redmine_clear_development' bundle exec sidekiq -e development -q mailer
 
 Modify sidekiq_mailer (http://github.com/andersondias/sidekiq_mailer) for redmine 
 
-Changes give opportunity convert args of methods to easy objects before write to queue and back after read from guegue
+Adds to gem the ability convert args of methods to easy objects before write to queue and back after read from guegue but before send to method
 
-## Example Redmine
+# Example Redmine
 
 
     ActionDispatch::Callbacks.to_prepare do
