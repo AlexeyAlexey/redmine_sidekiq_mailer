@@ -1,12 +1,12 @@
-Integration with Redmine
+# Integration with Redmine
 
 Adds to gem the ability convert args of methods to easy objects and back
 
-DATABASE_URL='mysql2://redmine_clear:@localhost/redmine_clear_development' bundle exec sidekiq -e development -q mailer
+Itegrate [sidekiq_mailer](http://github.com/andersondias/sidekiq_mailer) in redmine 
 
-Modify sidekiq_mailer (http://github.com/andersondias/sidekiq_mailer) for redmine 
 
 Adds to gem the ability convert args of methods to easy objects before write to queue and back after read from guegue but before send to method
+
 
 # Example Redmine
 
@@ -21,7 +21,7 @@ Adds to gem the ability convert args of methods to easy objects before write to 
           args.map{|a| a.is_a?(Array) ? (a.map(&:id))  : (a.id)}
         end
 
-        def sidekiq_mailer_before_document_added(args)
+        def document_added(args)
           [args.first.id, User.current.id]
         end
       end
@@ -68,9 +68,6 @@ Adds to gem the ability convert args of methods to easy objects before write to 
       end
     end
 
-
-
-#####################################
 
 
 
