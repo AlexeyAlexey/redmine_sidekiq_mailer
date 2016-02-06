@@ -61,7 +61,11 @@ module Sidekiq
       def method_missing(method_name, *args)
         if defined?(RedmineApp)
           if action_methods.include?(method_name.to_s) and Sidekiq::Mailer::BeforeFilter.constants.include?("#{self}".to_sym) and "Sidekiq::Mailer::BeforeFilter::#{self}".constantize.method_defined?(method_name.to_s)
-            Sidekiq::Mailer::Proxy.new(self, method_name, *args)
+            if UseSidekiqMailer.new.use_sidekiq_mailer?
+              Sidekiq::Mailer::Proxy.new(self, method_name, *args)
+            else
+              super
+            end
           else
             super
           end
@@ -78,6 +82,12 @@ module Sidekiq
     end
   
     module AfterFilter
+    end
+
+    class UseSidekiqMailer
+      def use_sidekiq_mailer?
+        true
+      end
     end
   end
 end

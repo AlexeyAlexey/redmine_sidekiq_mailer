@@ -60,6 +60,14 @@ Adds to gem the ability convert args of methods to easy objects before write to 
       
     end
 
+    #You cane override method use_sidekiq_mailer?
+    #this method turn on/off Sidekiq::Mailer 
+    class Sidekiq::Mailer::UseSidekiqMailer
+      def use_sidekiq_mailer?
+        true #true/false  defaulte true
+      end
+    end
+
 
 
 #####################################
