@@ -7,4 +7,4 @@ ActionMailer::Base.delivery_method = :test
 require 'sidekiq'
 require 'sidekiq/testing'
 
-require 'sidekiq_mailer'
+require 'redmine_sidekiq_mailer'

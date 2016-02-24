@@ -1,19 +1,20 @@
-require_dependency 'sidekiq_mailer'
+#require 'redmine_sidekiq_mailer'
+#require_dependency 'redmine_sidekiq_mailer'
 
 ActionDispatch::Callbacks.to_prepare do
-  Mailer.send(:include, Sidekiq::Mailer)
+  Mailer.send(:include, Sidekiq::RedmineMailer)
 
-  class Sidekiq::Mailer::BeforeFilter::Mailer
+  class Sidekiq::RedmineMailer::BeforeFilter::Mailer
     def issue_add(args)
       args.map{|a| a.is_a?(Array) ? (a.map(&:id))  : (a.id)}
     end
 
-    def sidekiq_mailer_before_document_added(args)
+    def document_added(args)
       [args.first.id, User.current.id]
     end
   end
 
-  class Sidekiq::Mailer::AfterFilter::Mailer
+  class Sidekiq::RedmineMailer::AfterFilter::Mailer
     def issue_add(params)
       #sleep 1
       i = 0
