@@ -1,5 +1,8 @@
-#require 'redmine_sidekiq_mailer'
-#require_dependency 'redmine_sidekiq_mailer'
+ActionDispatch::Callbacks.to_prepare do
+  Mailer.send(:include, Sidekiq::RedmineMailer)
+  require_dependency 'redmine_sidekiq_mailer/filters/mailer'
+end
+
 
 Redmine::Plugin.register :redmine_sidekiq_mailer do
   name 'Sidekiq Mailer Integration'
@@ -12,8 +15,3 @@ Redmine::Plugin.register :redmine_sidekiq_mailer do
 end
 
 
-ActionDispatch::Callbacks.to_prepare do
-  Mailer.send(:include, Sidekiq::RedmineMailer)
-  require_dependency 'mailer_filters'
-  
-end
